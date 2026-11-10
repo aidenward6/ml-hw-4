@@ -1,0 +1,79 @@
+===== P1 =====
+m = 1000: f_m(h) = 1 at h/m = 0.3708
+m = 10000: f_m(h) = 1 at h/m = 0.3731
+m = 100000: f_m(h) = 1 at h/m = 0.3733
+m = 10000, Remp = 0: largest h = 11  (bound = 0.0990)
+m = 10000, Remp = 0.05: largest h = 2  (bound = 0.0998)
+
+===== P2 =====
+non-collinear shattered: True
+collinear shattered: False
+collinear non-separable labelings: [(-1, 1, -1), (1, -1, 1)]
+
+ n | n+1 points | n+2 points
+ 2 | 1.000      | 0.000
+ 3 | 1.000      | 0.000
+ 4 | 1.000      | 0.000
+ 5 | 1.000      | 0.000
+
+4 random points:
+ [[ 0.05056171  0.49995133]
+ [-0.99590893  0.69359851]
+ [-0.41830152 -1.58457724]
+ [-0.64770677  0.59857517]]
+non-separable labelings: [(-1, -1, -1, 1), (1, 1, 1, -1)]
+case: point 3 is inside the triangle of the other three
+predicted non-separable: [(-1, -1, -1, 1), (1, 1, 1, -1)]
+matches: True
+
+rectangles shatter (+-1,0),(0,+-1): True
+random 5-point sets shattered by rectangles: 0 / 1000
+
+===== P3 =====
+m =    10: mean R = 0.13756, P(R > eps) = 0.9940
+m =    20: mean R = 0.11599, P(R > eps) = 0.9650
+m =    50: mean R = 0.06797, P(R > eps) = 0.6875
+m =   100: mean R = 0.03709, P(R > eps) = 0.2135
+m =   200: mean R = 0.01930, P(R > eps) = 0.0100
+m =   500: mean R = 0.00776, P(R > eps) = 0.0000
+m =  1000: mean R = 0.00398, P(R > eps) = 0.0000
+PAC bound m >= 350.6
+smallest empirical m = 150, P(R > eps) = 0.0375
+bound is pessimistic by a factor of 2.34
+log-log fit slope = -0.799  ->  R ~ m^(-0.799)
+
+===== P4 =====
+d =  1: train = 0.470, bound = 0.761, cv = 0.465, test = 0.494
+d =  2: train = 0.435, bound = 0.767, cv = 0.440, test = 0.431
+d =  3: train = 0.345, bound = 0.711, cv = 0.345, test = 0.383
+d =  4: train = 0.335, bound = 0.731, cv = 0.335, test = 0.369
+d =  5: train = 0.200, bound = 0.622, cv = 0.215, test = 0.194
+d =  6: train = 0.180, bound = 0.626, cv = 0.210, test = 0.168
+d =  7: train = 0.185, bound = 0.652, cv = 0.210, test = 0.172
+d =  8: train = 0.190, bound = 0.677, cv = 0.210, test = 0.163
+d =  9: train = 0.155, bound = 0.661, cv = 0.190, test = 0.135
+d = 10: train = 0.145, bound = 0.669, cv = 0.180, test = 0.135
+d = 11: train = 0.145, bound = 0.686, cv = 0.185, test = 0.150
+d = 12: train = 0.160, bound = 0.716, cv = 0.180, test = 0.152
+d = 13: train = 0.165, bound = 0.736, cv = 0.180, test = 0.148
+d = 14: train = 0.165, bound = 0.751, cv = 0.185, test = 0.145
+d = 15: train = 0.160, bound = 0.760, cv = 0.175, test = 0.158
+SRM picks d = 5
+5-fold CV picks d = 15
+best test error at d = 9
+min bound value = 0.6217834580798152
+1-NN train error: 0.0
+1-NN test error: 0.2002
+
+===== Bonus =====
+h threshold: 126.18473617370067
+necessary m ~ 393.75
+sufficient m from f_m(127) = 0.01: 17210684
+ratio sufficient / necessary: 43710
+
+notebook classifier:
+m = h =   10: Remp = 0.000, R = 0.501, bound = 1.460, violations = 0
+m = h =   50: Remp = 0.000, R = 0.499, bound = 1.334, violations = 0
+m = h =  100: Remp = 0.000, R = 0.500, bound = 1.318, violations = 0
+m = h =  500: Remp = 0.000, R = 0.499, bound = 1.305, violations = 0
+m = h = 1000: Remp = 0.000, R = 0.499, bound = 1.303, violations = 0
