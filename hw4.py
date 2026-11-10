@@ -9,6 +9,7 @@ from sklearn.neighbors import KNeighborsClassifier
 from numpy.polynomial.legendre import legvander
 
 np.random.seed(0)
+os.chdir(os.path.dirname(os.path.abspath(__file__)))
 os.makedirs("figs", exist_ok=True)
 
 
@@ -16,28 +17,27 @@ def f_m(h, m, eta=0.05):
     return np.sqrt((h * (np.log(2 * m / h) + 1) - np.log(eta / 4)) / m)
 
 
-# ---------------- P1 ----------------
+#p1
 print("===== P1 =====")
 
 plt.figure()
-for m in [10**3, 10**4, 10**5]:
+for m, ls in zip([10**3, 10**4, 10**5], ["-", "--", ":"]):
     ratios = np.linspace(1 / m, 1, 200)
     hs = np.unique(np.maximum(1, np.round(ratios * m)).astype(int))
-    plt.plot(hs / m, f_m(hs, m), label=f"m = {m}")
-plt.axhline(1, color="gray", linestyle="--", label="f = 1")
+    plt.plot(hs / m, f_m(hs, m), linestyle=ls, linewidth=2, label=f"m = {m}")
+plt.axhline(1, color="gray", linestyle="-.", label="f = 1")
 plt.xlabel("h / m")
 plt.ylabel("f_m(h)")
 plt.title("VC confidence term vs h/m (eta = 0.05)")
 plt.legend()
 plt.savefig("figs/p1a_vc_confidence.png", dpi=150)
-plt.close()
 
-# (b)
+#b
 for m in [10**3, 10**4, 10**5]:
     r = brentq(lambda r: f_m(r * m, m) - 1, 1e-6, 1)
     print(f"m = {m}: f_m(h) = 1 at h/m = {r:.4f}")
 
-# (c)
+#c
 m = 10**4
 for remp in [0, 0.05]:
     h = 1
@@ -46,7 +46,7 @@ for remp in [0, 0.05]:
     print(f"m = {m}, Remp = {remp}: largest h = {h}  (bound = {remp + f_m(h, m):.4f})")
 
 
-# ---------------- P2 ----------------
+#p2
 print("\n===== P2 =====")
 
 
@@ -60,8 +60,9 @@ def separable(X, y):
 
 
 def can_shatter(X):
-    for y in itertools.product([-1, 1], repeat=len(X)):
-        if not separable(X, np.array(y)):
+    # y and -y are both separable or both not, so only check half
+    for y in itertools.product([-1, 1], repeat=len(X) - 1):
+        if not separable(X, np.array((-1,) + y)):
             return False
     return True
 
@@ -74,14 +75,14 @@ def bad_labelings(X):
     return bad
 
 
-# (a)
+#a
 X_tri = np.array([[0, 0], [1, 0], [0, 1]], dtype=float)
 X_col = np.array([[0, 0], [1, 0], [2, 0]], dtype=float)
 print("non-collinear shattered:", can_shatter(X_tri))
 print("collinear shattered:", can_shatter(X_col))
 print("collinear non-separable labelings:", bad_labelings(X_col))
 
-# (b)
+#b
 print("\n n | n+1 points | n+2 points")
 for n in [2, 3, 4, 5]:
     c1 = 0
@@ -91,9 +92,9 @@ for n in [2, 3, 4, 5]:
             c1 += 1
         if can_shatter(np.random.randn(n + 2, n)):
             c2 += 1
-    print(f" {n} | {c1 / 1000:.3f}      | {c2 / 1000:.3f}")
+    print(f" {n} | {c1 / 1000:.3f}      | {c2 / 1000:.3f}", flush=True)
 
-# (c)
+#c
 rng = np.random.RandomState(4)
 X4 = rng.randn(4, 2)
 print("\n4 random points:\n", X4)
@@ -152,10 +153,9 @@ plt.ylabel("x2")
 plt.title(f"4 random points with non-separable labeling {bad[0]}")
 plt.legend()
 plt.savefig("figs/p2c_nonseparable.png", dpi=150)
-plt.close()
 
 
-# (d)
+#d
 def rect_realizable(X, y):
     pos = X[y == 1]
     neg = X[y == -1]
@@ -183,7 +183,7 @@ for t in range(1000):
 print("random 5-point sets shattered by rectangles:", cnt, "/ 1000")
 
 
-# ---------------- P3 ----------------
+#p3
 print("\n===== P3 =====")
 c_lo = np.array([0.2, 0.3])
 c_hi = np.array([0.7, 0.6])
@@ -214,7 +214,7 @@ for m in ms:
 m_bound = 4 / eps * np.log(4 / delta)
 print(f"PAC bound m >= {m_bound:.1f}")
 
-# (c) smallest m (step 10) with empirical P(R > eps) <= delta
+#c
 m = 10
 while True:
     errs = np.array([true_error(m) for _ in range(T)])
@@ -232,7 +232,6 @@ plt.ylabel("mean R")
 plt.title("Rectangle learner: mean true error vs m")
 plt.legend()
 plt.savefig("figs/p3b_mean_error.png", dpi=150)
-plt.close()
 
 plt.figure()
 plt.semilogx(ms, p_bad, "o-", label="empirical P(R > 0.05)")
@@ -244,14 +243,13 @@ plt.ylabel("fraction of trials with R > eps")
 plt.title("Rectangle learner: P(R > 0.05) vs m")
 plt.legend()
 plt.savefig("figs/p3b_prob_bad.png", dpi=150)
-plt.close()
 
-# (d)
+# d
 slope, intercept = np.polyfit(np.log(ms), np.log(mean_err), 1)
 print(f"log-log fit slope = {slope:.3f}  ->  R ~ m^(-{-slope:.3f})")
 
 
-# ---------------- P4 ----------------
+#p4
 print("\n===== P4 =====")
 
 
@@ -303,15 +301,14 @@ plt.ylabel("error")
 plt.title("SRM vs cross-validation for sign(p(x))")
 plt.legend()
 plt.savefig("figs/p4c_srm_vs_cv.png", dpi=150)
-plt.close()
 
-# (e)
+#e
 knn = KNeighborsClassifier(n_neighbors=1).fit(x_tr.reshape(-1, 1), y_tr)
 print("1-NN train error:", np.mean(knn.predict(x_tr.reshape(-1, 1)) != y_tr))
 print("1-NN test error:", np.mean(knn.predict(x_te.reshape(-1, 1)) != y_te))
 
 
-# ---------------- Bonus ----------------
+# bonus
 print("\n===== Bonus =====")
 # B1
 delta = 0.02
@@ -347,3 +344,5 @@ for m in [10, 50, 100, 500, 1000]:
     b = emps + f_m(h, m)
     print(f"m = h = {m:4d}: Remp = {emps.mean():.3f}, R = {risks.mean():.3f}, "
           f"bound = {b.mean():.3f}, violations = {np.sum(risks > b)}")
+
+plt.show()
